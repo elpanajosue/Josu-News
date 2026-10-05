@@ -362,8 +362,7 @@ main {
         grid-template-columns: 1fr;
     }
 
-    .hero-image {
-        min-height: 250px;
+   
     }
 
     .news-grid {
@@ -377,16 +376,3 @@ main {
     .humor-content {
         padding: 25px;
     }
-
-.hero-image {
-    width: 100%;
-    overflow: hidden;
-}
-
-.hero-image img {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    display: block;
-    object-fit: cover;
-}
