@@ -260,14 +260,23 @@ main {
 ========================= */
 
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 18px !important;
 }
 
 .gallery-item {
-    min-height: 180px;
-    border: 3px solid #111;
+    min-height: 180px !important;
+    height: 180px !important;
+    border: 3px solid #111 !important;
+    overflow: hidden !important;
+}
+
+.gallery-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
 }
 
 /* =========================
