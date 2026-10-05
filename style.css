@@ -378,9 +378,15 @@ main {
         padding: 25px;
     }
 
-.hero-image img {
+.hero-image {
     width: 100%;
-    max-height: 500px;
-    object-fit: cover;
+    overflow: hidden;
+}
+
+.hero-image img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
     display: block;
+    object-fit: cover;
 }
