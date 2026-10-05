@@ -1,2 +1,2 @@
-# Josu-News
+# Josue-News
 Periódico escolar Josué news
