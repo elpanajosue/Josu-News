@@ -261,19 +261,26 @@ main {
 
 .gallery-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 18px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .gallery-item {
-    min-height: 180px !important;
+    min-width: 0 !important;
     height: 180px !important;
+    min-height: 0 !important;
     border: 3px solid #111 !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
 }
 
 .gallery-item img {
     width: 100% !important;
+    max-width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     display: block !important;
