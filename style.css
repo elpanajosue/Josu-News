@@ -413,3 +413,23 @@ main {
         height: 150px !important;
     }
 }
+.gallery-button-container {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.gallery-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #b00000;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #000;
+    transition: 0.3s;
+}
+
+.gallery-button:hover {
+    background: #000;
+    color: white;
+}
