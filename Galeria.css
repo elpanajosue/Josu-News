@@ -102,46 +102,39 @@ main {
 
 .gallery-description {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     font-size: 18px;
 }
 
 /* =========================
-   GALERÍA
+   GALERÍA DE PERIÓDICOS
 ========================= */
 
 .newspaper-gallery {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-
-    max-width: 650px;
-    margin: 25px auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+    max-width: 900px;
+    margin: auto;
 }
 
 .newspaper-page {
     background: #fff;
     border: 3px solid #111;
-    padding: 6px;
-
+    padding: 8px;
     cursor: pointer;
-
-    overflow: hidden;
-
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform .2s, box-shadow .2s;
 }
 
 .newspaper-page:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 15px rgba(0,0,0,.25);
 }
 
 .newspaper-page img {
     display: block;
-
     width: 100%;
-    height: 280px;
-
+    height: 500px;
     object-fit: contain;
 }
 
@@ -151,18 +144,14 @@ main {
 
 .image-viewer {
     position: fixed;
-
     inset: 0;
-
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0,0,0,.94);
 
     display: none;
-
     align-items: center;
     justify-content: center;
 
     padding: 30px;
-
     z-index: 9999;
 }
 
@@ -171,8 +160,6 @@ main {
 }
 
 #viewerImage {
-    display: block;
-
     width: auto !important;
     height: auto !important;
 
@@ -181,7 +168,7 @@ main {
 
     object-fit: contain !important;
 
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 30px rgba(0,0,0,.6);
 }
 
 /* =========================
@@ -190,12 +177,8 @@ main {
 
 .close-button {
     position: absolute;
-
     top: 20px;
     right: 25px;
-
-    width: 45px;
-    height: 45px;
 
     background: #b40000;
     color: #fff;
@@ -203,17 +186,14 @@ main {
     border: 2px solid #fff;
     border-radius: 50%;
 
+    width: 45px;
+    height: 45px;
+
     font-size: 30px;
     line-height: 35px;
 
     cursor: pointer;
-
     z-index: 10000;
-}
-
-.close-button:hover {
-    background: #fff;
-    color: #111;
 }
 
 /* =========================
@@ -223,13 +203,8 @@ main {
 .previous-button,
 .next-button {
     position: absolute;
-
     top: 50%;
-
     transform: translateY(-50%);
-
-    width: 50px;
-    height: 50px;
 
     background: #b40000;
     color: #fff;
@@ -237,11 +212,13 @@ main {
     border: 2px solid #fff;
     border-radius: 50%;
 
+    width: 50px;
+    height: 50px;
+
     font-size: 40px;
     line-height: 35px;
 
     cursor: pointer;
-
     z-index: 10000;
 }
 
@@ -254,5 +231,92 @@ main {
 }
 
 .previous-button:hover,
-.next-button:hover {
-    background
+.next-button:hover,
+.close-button:hover {
+    background: #fff;
+    color: #111;
+}
+
+/* =========================
+   NO SCROLL
+========================= */
+
+.no-scroll {
+    overflow: hidden;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    background: #111;
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 8px solid #b40000;
+    margin-top: 50px;
+}
+
+footer h2 {
+    font-size: 35px;
+}
+
+footer p {
+    color: #d00000;
+    font-weight: bold;
+}
+
+footer span {
+    display: block;
+    margin-top: 20px;
+    color: #999;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+/* =========================
+   CELULARES
+========================= */
+
+@media (max-width: 700px) {
+
+    .top-bar {
+        font-size: 9px;
+    }
+
+    .masthead h1 {
+        letter-spacing: -2px;
+    }
+
+    .newspaper-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .newspaper-page img {
+        height: auto;
+        max-height: 600px;
+    }
+
+    .image-viewer {
+        padding: 15px;
+    }
+
+    #viewerImage {
+        max-width: 92vw !important;
+        max-height: 85vh !important;
+    }
+
+    .previous-button {
+        left: 8px;
+    }
+
+    .next-button {
+        right: 8px;
+    }
+
+    .close-button {
+        top: 10px;
+        right: 10px;
+    }
+}
