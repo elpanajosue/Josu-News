@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Galería | JOSUÉ NEWS</title>
+
+    <link rel="stylesheet" href="galeria.css">
+</head>
+
+<body>
+
+    <header class="galeria-header">
+
+        <div class="top-bar">
+            <span>EDICIÓN ESCOLAR</span>
+            <span>JOSUÉ NEWS</span>
+            <span>2026</span>
+        </div>
+
+        <div class="masthead">
+            <h1>JOSUÉ NEWS</h1>
+            <p>Información seria. Noticias no tanto.</p>
+        </div>
+
+        <nav>
+            <a href="index.html">← VOLVER AL PERIÓDICO</a>
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <div class="section-title">
+            <span>GALERÍA</span>
+        </div>
+
+        <p class="gallery-description">
+            Explora las imágenes de JOSUÉ NEWS y amplía cada página para verla con más detalle.
+        </p>
+
+
+        <section class="newspaper-gallery">
+
+            <div class="newspaper-page">
+                <img
+                    src="imagenes/file_0000000087f881f596c0f84444d2f927.png"
+                    alt="Página 1 de JOSUÉ NEWS"
+                    onclick="openImage(this)"
+                >
+            </div>
+
+            <div class="newspaper-page">
+                <img
+                    src="imagenes/file_000000002880822fab9816c562c62a15.png"
+                    alt="Página 2 de JOSUÉ NEWS"
+                    onclick="openImage(this)"
+                >
+            </div>
+
+            <div class="newspaper-page">
+                <img
+                    src="imagenes/file_00000000ddf0820e990035ad2cf3b0d6.png"
+                    alt="Página 3 de JOSUÉ NEWS"
+                    onclick="openImage(this)"
+                >
+            </div>
+
+            <div class="newspaper-page">
+                <img
+                    src="imagenes/file_000000004114820eb2ee918c62eab57a.png"
+                    alt="Página 4 de JOSUÉ NEWS"
+                    onclick="openImage(this)"
+                >
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- VISOR DE IMAGEN -->
+
+    <div id="imageViewer" class="image-viewer" onclick="closeImage(event)">
+
+        <button class="close-button" onclick="closeViewer()">
+            ×
+        </button>
+
+        <button class="previous-button" onclick="previousImage(event)">
+            ‹
+        </button>
+
+        <img id="viewerImage" src="" alt="Imagen ampliada">
+
+        <button class="next-button" onclick="nextImage(event)">
+            ›
+        </button>
+
+    </div>
+
+
+    <footer>
+
+        <h2>JOSUÉ NEWS</h2>
+
+        <p>
+            Información seria. Noticias no tanto.
+        </p>
+
+        <span>
+            © 2026 JOSUÉ NEWS — Periódico escolar
+        </span>
+
+    </footer>
+
+
+    <script>
+
+        const images = [
+            "imagenes/file_0000000087f881f596c0f84444d2f927.png",
+            "imagenes/file_000000002880822fab9816c562c62a15.png",
+            "imagenes/file_00000000ddf0820e990035ad2cf3b0d6.png",
+            "imagenes/file_000000004114820eb2ee918c62eab57a.png"
+        ];
+
+        let currentImage = 0;
+
+
+        function openImage(image) {
+
+            currentImage = images.indexOf(image.src.split("/").pop());
+
+            if (currentImage === -1) {
+                currentImage = 0;
+            }
+
+            document.getElementById("viewerImage").src = images[currentImage];
+
+            document.getElementById("imageViewer").classList.add("active");
+
+            document.body.classList.add("no-scroll");
+        }
+
+
+        function closeViewer() {
+
+            document.getElementById("imageViewer").classList.remove("active");
+
+            document.body.classList.remove("no-scroll");
+        }
+
+
+        function closeImage(event) {
+
+            if (event.target.id === "imageViewer") {
+                closeViewer();
+            }
+
+        }
+
+
+        function nextImage(event) {
+
+            event.stopPropagation();
+
+            currentImage++;
+
+            if (currentImage >= images.length) {
+                currentImage = 0;
+            }
+
+            document.getElementById("viewerImage").src = images[currentImage];
+
+        }
+
+
+        function previousImage(event) {
+
+            event.stopPropagation();
+
+            currentImage--;
+
+            if (currentImage < 0) {
+                currentImage = images.length - 1;
+            }
+
+            document.getElementById("viewerImage").src = images[currentImage];
+
+        }
+
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                closeViewer();
+            }
+
+            if (event.key === "ArrowRight") {
+                nextImage(event);
+            }
+
+            if (event.key === "ArrowLeft") {
+                previousImage(event);
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
