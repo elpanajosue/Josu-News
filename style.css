@@ -404,3 +404,12 @@ main {
     object-fit: cover !important;
     display: block !important;
 }
+@media (max-width: 600px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .gallery-item {
+        height: 150px !important;
+    }
+}
