@@ -1,0 +1,380 @@
+/* =========================
+   JOSUÉ NEWS
+   ESTILO ROJO + NEGRO
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f5f1e8;
+    color: #111;
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.5;
+}
+
+/* =========================
+   CABECERA
+========================= */
+
+.site-header {
+    background: #fff;
+    border-bottom: 5px solid #b40000;
+}
+
+.top-bar {
+    background: #111;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 5%;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.masthead {
+    text-align: center;
+    padding: 25px 15px 20px;
+}
+
+.brand h1 {
+    font-size: clamp(48px, 10vw, 110px);
+    line-height: 0.9;
+    font-weight: 900;
+    letter-spacing: -4px;
+    color: #111;
+}
+
+.brand p {
+    color: #b40000;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    margin-top: 12px;
+    letter-spacing: 2px;
+}
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-top: 2px solid #111;
+    padding: 0;
+}
+
+.navbar a {
+    color: #111;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    padding: 13px 22px;
+    transition: 0.2s;
+}
+
+.navbar a:hover {
+    background: #b40000;
+    color: #fff;
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+main {
+    max-width: 1250px;
+    margin: auto;
+    padding: 30px 5%;
+}
+
+/* =========================
+   NOTICIA PRINCIPAL
+========================= */
+
+.hero-news {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 30px;
+    padding-bottom: 35px;
+    border-bottom: 3px solid #111;
+}
+
+.hero-image,
+.news-image,
+.gallery-item {
+    background: #222;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    min-height: 250px;
+}
+
+.hero-image {
+    min-height: 400px;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.category {
+    color: #b40000;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.hero-content h2 {
+    font-size: clamp(38px, 5vw, 65px);
+    line-height: 0.95;
+    margin: 12px 0 20px;
+}
+
+.lead {
+    font-size: 20px;
+}
+
+.date,
+.news-date {
+    color: #666;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+/* =========================
+   TÍTULOS DE SECCIÓN
+========================= */
+
+.section-title {
+    border-top: 5px solid #111;
+    border-bottom: 2px solid #111;
+    margin: 45px 0 25px;
+    padding: 8px 0;
+}
+
+.section-title span {
+    background: #b40000;
+    color: #fff;
+    padding: 8px 14px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+/* =========================
+   NOTICIAS
+========================= */
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.news-card {
+    background: #fff;
+    border: 1px solid #ccc;
+}
+
+.news-image {
+    min-height: 190px;
+}
+
+.news-content {
+    padding: 18px;
+}
+
+.news-content h3 {
+    font-size: 27px;
+    line-height: 1.05;
+    margin: 8px 0;
+}
+
+.news-content p {
+    color: #444;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.read-more {
+    display: inline-block;
+    color: #b40000;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 20px;
+    border-bottom: 2px solid #b40000;
+}
+
+.read-more:hover {
+    color: #111;
+    border-color: #111;
+}
+
+/* =========================
+   HUMOR
+========================= */
+
+.humor-content {
+    background: #111;
+    color: #fff;
+    padding: 40px;
+    border-left: 10px solid #b40000;
+}
+
+.humor-content h2 {
+    color: #fff;
+    font-size: clamp(32px, 5vw, 55px);
+    line-height: 1;
+    margin: 10px 0;
+}
+
+.humor-content p {
+    color: #ddd;
+    font-size: 18px;
+}
+
+/* =========================
+   GALERÍA
+========================= */
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.gallery-item {
+    min-height: 180px;
+    border: 3px solid #111;
+}
+
+/* =========================
+   NOSOTROS
+========================= */
+
+.about-section {
+    margin-bottom: 50px;
+}
+
+.about-content {
+    max-width: 800px;
+    font-size: 18px;
+}
+
+.about-content h2 {
+    font-size: 40px;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+.about-content p {
+    margin-bottom: 15px;
+}
+
+.about-content strong {
+    color: #b40000;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+    background: #111;
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 8px solid #b40000;
+}
+
+.footer-brand h2 {
+    font-size: 35px;
+}
+
+.footer-brand p {
+    color: #d00000;
+    font-weight: bold;
+}
+
+.footer-links {
+    margin: 25px 0;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-links a:hover {
+    color: #d00000;
+}
+
+.copyright {
+    color: #999;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+/* =========================
+   CELULARES
+========================= */
+
+@media (max-width: 800px) {
+
+    .top-bar {
+        font-size: 9px;
+    }
+
+    .brand h1 {
+        letter-spacing: -2px;
+    }
+
+    .navbar a {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .hero-news {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-image {
+        min-height: 250px;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .humor-content {
+        padding: 25px;
+    }
+}
