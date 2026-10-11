@@ -115,7 +115,7 @@
     let examStartedFullscreen = false;
 let examIncidents = 0;
 
-function registerExamIncident(message) {
+async function registerExamIncident(message) {
   examIncidents++;
 
   const log = document.getElementById("anti-cheat-log");
@@ -124,6 +124,30 @@ function registerExamIncident(message) {
     log.textContent =
       "Incidencias detectadas: " + examIncidents +
       " · Última: " + message;
+  }
+
+  if (!client || !currentUser) {
+    console.warn("No hay sesión para guardar la incidencia.");
+    return;
+  }
+
+  const incidentType =
+    message === "Se abandonó la pestaña"
+      ? "tab_hidden"
+      : "fullscreen_exit";
+
+  const { error } = await client
+    .from("exam_incidents")
+    .insert({
+      user_id: currentUser.id,
+      incident_type: incidentType,
+      details: message
+    });
+
+  if (error) {
+    console.error("No se pudo guardar la incidencia:", error.message);
+  } else {
+    console.log("Incidencia guardada en Supabase.");
   }
 }
 
