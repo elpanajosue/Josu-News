@@ -62,6 +62,16 @@
 
     <section id="examen" class="chem-panel" hidden>
       <h2>Prueba de química</h2>
+      <div id="anti-cheat-panel">
+  <p><strong>🛡️ Modo evaluación activo</strong></p>
+  <p>Evita cambiar de pestaña durante la prueba.</p>
+  <button type="button" id="enter-exam-mode">
+    Activar pantalla completa
+  </button>
+  <p id="anti-cheat-log" aria-live="polite">
+    Incidencias detectadas: 0
+  </p>
+</div>
       <p>Selecciona una respuesta para cada pregunta. Al entregar, la calificación se calcula en el servidor.</p>
       <form id="quiz-form">
         <div id="questions"></div>
@@ -102,6 +112,62 @@
     let currentProfile = null;
     let loadedQuestions = [];
     let busy = false;
+    let examStartedFullscreen = false;
+let examIncidents = 0;
+
+function registerExamIncident(message) {
+  examIncidents++;
+
+  const log = document.getElementById("anti-cheat-log");
+
+  if (log) {
+    log.textContent =
+      "Incidencias detectadas: " + examIncidents +
+      " · Última: " + message;
+  }
+}
+
+document.getElementById("enter-exam-mode")
+  ?.addEventListener("click", async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      examStartedFullscreen = true;
+      showStatus("Modo evaluación activado.");
+    } catch (error) {
+      showStatus(
+        "No se pudo activar pantalla completa. Puedes continuar."
+      );
+    }
+  });
+
+document.addEventListener("visibilitychange", () => {
+  const exam = document.getElementById("examen");
+
+  if (
+    document.visibilityState === "hidden" &&
+    exam &&
+    !exam.hidden
+  ) {
+    registerExamIncident("Se abandonó la pestaña");
+  }
+});
+
+document.addEventListener("fullscreenchange", () => {
+  const exam = document.getElementById("examen");
+
+  if (
+    examStartedFullscreen &&
+    !document.fullscreenElement &&
+    exam &&
+    !exam.hidden
+  ) {
+    registerExamIncident("Se salió de pantalla completa");
+    showStatus(
+      "Aviso: saliste de pantalla completa. " +
+      "La incidencia quedó registrada en esta sesión."
+    );
+  }
+});
 
     function showStatus(message) { statusBox.textContent = message; }
     function setVisible(id, visible) { document.getElementById(id).hidden = !visible; }
@@ -167,7 +233,14 @@
         showStatus("No se pudieron cargar las preguntas: " + error.message);
         return;
       }
-      loadedQuestions = data || [];
+      loadedQuestions = [...(data || [])];
+
+for (let i = loadedQuestions.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+
+  [loadedQuestions[i], loadedQuestions[j]] =
+    [loadedQuestions[j], loadedQuestions[i]];
+}
       questionsBox.replaceChildren();
 
       if (!loadedQuestions.length) {
