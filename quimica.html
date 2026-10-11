@@ -248,6 +248,7 @@ document.addEventListener("fullscreenchange", () => {
         setVisible("examen", false);
         await loadMyResults();
         await loadTeacherResults();
+        await loadTeacherIncidents();
       } else {
         await loadMyResults();
         await loadQuestions();
@@ -436,6 +437,79 @@ for (let i = loadedQuestions.length - 1; i > 0; i--) {
         box.textContent = "Acceso no autorizado.";
         return;
       }
+      async function loadTeacherIncidents() {
+  const box = document.getElementById("teacher-incidents");
+
+  if (!currentProfile || currentProfile.role !== "teacher") {
+    box.textContent = "Acceso no autorizado.";
+    return;
+  }
+
+  box.textContent = "Cargando incidencias…";
+
+  const [incidentsResponse, profilesResponse] = await Promise.all([
+    client
+      .from("exam_incidents")
+      .select("id, user_id, incident_type, details, created_at")
+      .order("created_at", { ascending: false }),
+    client
+      .from("profiles")
+      .select("user_id, display_name")
+  ]);
+
+  if (incidentsResponse.error || profilesResponse.error) {
+    box.textContent = "Error al consultar incidencias: " +
+      (incidentsResponse.error || profilesResponse.error).message;
+    return;
+  }
+
+  const incidents = incidentsResponse.data || [];
+
+  if (!incidents.length) {
+    box.textContent = "Todavía no hay incidencias registradas.";
+    return;
+  }
+
+  const names = new Map(
+    (profilesResponse.data || []).map(profile => [
+      profile.user_id,
+      profile.display_name || "Estudiante"
+    ])
+  );
+
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  thead.innerHTML =
+    "<tr><th>Estudiante</th><th>Incidencia</th><th>Detalle</th><th>Fecha</th></tr>";
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  incidents.forEach(incident => {
+    const row = document.createElement("tr");
+    const name = document.createElement("td");
+    const type = document.createElement("td");
+    const details = document.createElement("td");
+    const date = document.createElement("td");
+
+    name.textContent = names.get(incident.user_id) || "Estudiante";
+    type.textContent =
+      incident.incident_type === "tab_hidden"
+        ? "Cambio de pestaña"
+        : incident.incident_type === "fullscreen_exit"
+          ? "Salida de pantalla completa"
+          : incident.incident_type;
+
+    details.textContent = incident.details || "Sin detalles";
+    date.textContent = formatDate(incident.created_at);
+
+    row.append(name, type, details, date);
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  box.replaceChildren(table);
+}
       box.textContent = "Cargando calificaciones…";
       const [profilesResponse, attemptsResponse] = await Promise.all([
         client.from("profiles").select("user_id, display_name").eq("role", "student"),
@@ -485,6 +559,14 @@ for (let i = loadedQuestions.length - 1; i > 0; i--) {
         showStatus("No se pudieron actualizar las notas: " + err.message);
       }
     });
+    document.getElementById("refresh-incidents")
+  .addEventListener("click", async () => {
+    try {
+      await loadTeacherIncidents();
+    } catch (err) {
+      showStatus("No se pudieron cargar las incidencias: " + err.message);
+    }
+  });
 
     document.getElementById("logout").addEventListener("click", async () => {
       if (!client) return;
