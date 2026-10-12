@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JOSUÉ NEWS | Examen de química</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .chem-app{max-width:850px;margin:30px auto;padding:20px}
+    .chem-panel{background:#fffdf8;border:2px solid #111;border-top:5px solid #b40000;padding:22px;margin-bottom:22px}
+    .chem-app h2,.chem-app h3{margin-bottom:14px}
+    .chem-app input,.chem-app button{display:block;width:100%;padding:12px;margin:10px 0;font:inherit}
+    .chem-app input{border:1px solid #777;background:#fff}
+    .chem-app button{background:#b40000;color:#fff;border:2px solid #111;font-weight:bold;cursor:pointer}
+    .chem-app button:disabled{opacity:.6;cursor:not-allowed}
+    .chem-app .secondary{background:#111}
+    .chem-question{padding:16px 0;border-bottom:1px solid #aaa}
+    .chem-question label{display:block;padding:7px 0;cursor:pointer}
+    .chem-question input{display:inline;width:auto;margin-right:8px}
+    .chem-status{white-space:pre-wrap;overflow-wrap:anywhere;font-weight:bold}
+    .chem-table-wrap{overflow-x:auto}
+    .chem-app table{width:100%;border-collapse:collapse}
+    .chem-app th,.chem-app td{border:1px solid #777;padding:9px;text-align:left}
+    [hidden]{display:none!important}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="top-bar"><span>EDICIÓN ESCOLAR</span><span>JOSUÉ NEWS</span><span>2026</span></div>
+    <div class="masthead"><div class="brand"><h1>JOSUÉ NEWS</h1><p>Información seria. Noticias no tanto.</p></div></div>
+    <nav class="navbar">
+      <a href="index.html">Inicio</a>
+      <a href="#acceso">Acceso</a>
+      <a href="#examen">Examen</a>
+      <a href="#notas">Mis notas</a>
+    </nav>
+  </header>
+
+  <main class="chem-app">
+    <section class="chem-panel">
+      <h2>EXAMEN DE QUÍMICA INORGÁNICA</h2>
+      <p>Hidrácidos, oxácidos, óxidos, hidróxidos, sales y nomenclatura.</p>
+      <p id="session-info">No has iniciado sesión.</p>
+      <button id="logout" class="secondary" hidden>Cerrar sesión</button>
+      <p id="status" class="chem-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="acceso" class="chem-panel">
+      <h2>Acceso de estudiantes y docentes</h2>
+      <form id="auth-form">
+        <label for="display-name">Nombre para mostrar (solo al registrarte)</label>
+        <input id="display-name" autocomplete="name" placeholder="Nombre y apellido">
+        <label for="email">Correo electrónico</label>
+        <input id="email" type="email" required autocomplete="email" placeholder="tu@correo.com">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres">
+        <button type="submit">Iniciar sesión</button>
+        <button type="button" id="signup-button" class="secondary">Crear cuenta de estudiante</button>
+      </form>
+      <p>Registrarse crea una cuenta de estudiante. El rol de docente debe asignarlo el administrador desde Supabase.</p>
+    </section>
+
+    <section id="examen" class="chem-panel" hidden>
+      <h2>Prueba de química</h2>
+      <p>Selecciona una respuesta para cada pregunta. Al entregar, la calificación se calcula en el servidor.</p>
+      <form id="quiz-form">
+        <div id="questions"></div>
+        <button id="submit-quiz" type="submit">Entregar examen</button>
+      </form>
+    </section>
+
+    <section id="notas" class="chem-panel" hidden>
+      <h2>Mis resultados</h2>
+      <div id="my-results"></div>
+    </section>
+
+    <section id="teacher-panel" class="chem-panel" hidden>
+      <h2>Panel docente</h2>
+      <p>Calificaciones registradas.</p>
+      <button type="button" id="refresh-teacher">Actualizar calificaciones</button>
+      <div id="teacher-results" class="chem-table-wrap"></div>
+      <hr style="margin:22px 0;border:0;border-top:2px solid #b40000">
+      <h3>Incidencias del examen</h3>
+      <p>Registra cambios de pestaña y salidas de pantalla completa detectados durante el examen.</p>
+      <button type="button" id="refresh-incidents" class="secondary">Actualizar incidencias</button>
+      <div id="teacher-incidents" class="chem-table-wrap">Pulsa «Actualizar incidencias» para consultar.</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand"><h2>JOSUÉ NEWS</h2><p>Información seria. Noticias no tanto.</p></div>
+    <p>© 2026 JOSUÉ NEWS — Periódico escolar</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Sustituye ambos textos por los datos de tu proyecto Supabase.
+    // Usa la Project URL base (sin /rest/v1) y la publishable key.
+    const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
+    const SUPABASE_KEY = "PEGA_AQUI_TU_PUBLISHABLE_KEY";
+
+    const statusBox = document.getElementById("status");
+    const questionsBox = document.getElementById("questions");
+    const authForm = document.getElementById("auth-form");
+    let client = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let loadedQuestions = [];
+    let busy = false;
+
+    function showStatus(message) { statusBox.textContent = message; }
+    function setVisible(id, visible) { document.getElementById(id).hidden = !visible; }
+    function formatDate(value) {
+      return new Date(value).toLocaleString("es-CO");
+    }
+
+    async function loadProfile() {
+      const { data, error } = await client
+        .from("profiles")
+        .select("user_id, display_name, role")
+        .eq("user_id", currentUser.id)
+        .single();
+      if (error) throw error;
+      currentProfile = data;
+    }
+
+    async function refreshSession() {
+      const { data, error } = await client.auth.getSession();
+      if (error) throw error;
+      currentUser = data.session ? data.session.user : null;
+
+      if (!currentUser) {
+        currentProfile = null;
+        document.getElementById("session-info").textContent = "No has iniciado sesión.";
+        setVisible("acceso", true);
+        setVisible("examen", false);
+        setVisible("notas", false);
+        setVisible("teacher-panel", false);
+        setVisible("logout", false);
+        return;
+      }
+
+      await loadProfile();
+      document.getElementById("session-info").textContent =
+        "Sesión: " + (currentProfile.display_name || currentUser.email || "Usuario") +
+        " · Rol: " + currentProfile.role;
+
+      setVisible("acceso", false);
+      setVisible("logout", true);
+      setVisible("notas", true);
+      setVisible("teacher-panel", currentProfile.role === "teacher");
+
+      if (currentProfile.role === "teacher") {
+        setVisible("examen", false);
+        await loadMyResults();
+        await loadTeacherResults();
+        await loadTeacherIncidents();
+      } else {
+        await loadMyResults();
+        await loadQuestions();
+      }
+    }
+
+    async function loadQuestions() {
+      showStatus("Cargando preguntas…");
+      const { data, error } = await client
+        .from("biology_questions")
+        .select("id, topic, prompt, options")
+        .eq("active", true)
+        .order("id");
+
+      if (error) {
+        showStatus("No se pudieron cargar las preguntas: " + error.message);
+        return;
+      }
+      loadedQuestions = data || [];
+      questionsBox.replaceChildren();
+
+      if (!loadedQuestions.length) {
+        setVisible("examen", false);
+        showStatus("No hay preguntas activas.");
+        return;
+      }
+
+      loadedQuestions.forEach((question, index) => {
+        const section = document.createElement("section");
+        section.className = "chem-question";
+        const heading = document.createElement("h3");
+        heading.textContent = (index + 1) + ". [" + question.topic + "] " + question.prompt;
+        section.appendChild(heading);
+
+        question.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "question-" + question.id;
+          radio.value = String(optionIndex);
+          radio.required = true;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(" " + option));
+          section.appendChild(label);
+        });
+        questionsBox.appendChild(section);
+      });
+
+      setVisible("examen", true);
+      showStatus("Examen listo. ¡Mucho éxito!");
+    }
+
+    authForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!client || busy) return;
+      busy = true;
+      const button = authForm.querySelector('button[type="submit"]');
+      button.disabled = true;
+      try {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        showStatus("Iniciando sesión…");
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await refreshSession();
+        showStatus("Sesión iniciada.");
+      } catch (err) {
+        showStatus("No se pudo iniciar sesión: " + err.message);
+      } finally {
+        busy = false;
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("signup-button").addEventListener("click", async () => {
+      if (!client || busy) return;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const displayName = document.getElementById("display-name").value.trim();
+
+      if (!email || password.length < 8 || !displayName) {
+        showStatus("Completa nombre, correo y contraseña de al menos 8 caracteres.");
+        return;
+      }
+      busy = true;
+      const button = document.getElementById("signup-button");
+      button.disabled = true;
+      try {
+        showStatus("Creando cuenta…");
+        const { data, error } = await client.auth.signUp({
+          email,
+          password,
+          options: { data: { display_name: displayName } }
+        });
+        if (error) throw error;
+
+        if (!data.session) {
+          showStatus("Cuenta creada. Confirma tu correo si Supabase lo solicita y después inicia sesión.");
+          return;
+        }
+        await refreshSession();
+        showStatus("Cuenta creada correctamente.");
+      } catch (err) {
+        showStatus("No se pudo crear la cuenta: " + err.message);
+      } finally {
+        busy = false;
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("quiz-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!client || !currentUser || !loadedQuestions.length || busy) return;
+
+      const answers = [];
+      for (const question of loadedQuestions) {
+        const selected = document.querySelector(
+          'input[name="question-' + question.id + '"]:checked'
+        );
+        if (!selected) {
+          showStatus("Responde todas las preguntas antes de entregar.");
+          return;
+        }
+        answers.push({
+          question_id: question.id,
+          selected_option: Number(selected.value)
+        });
+      }
+
+      busy = true;
+      const button = document.getElementById("submit-quiz");
+      button.disabled = true;
+      try {
+        showStatus("Corrigiendo examen en el servidor…");
+        const { data, error } = await client.rpc("submit_biology_quiz", {
+          p_answers: answers
+        });
+        if (error) throw error;
+        const result = Array.isArray(data) ? data[0] : data;
+        showStatus("Examen entregado.\nPuntaje: " + result.score + " de " + result.total);
+        setVisible("examen", false);
+        await loadMyResults();
+      } catch (err) {
+        showStatus("No se pudo entregar el examen: " + err.message);
+      } finally {
+        busy = false;
+        button.disabled = false;
+      }
+    });
+
+    async function loadMyResults() {
+      const box = document.getElementById("my-results");
+      const { data, error } = await client
+        .from("quiz_attempts")
+        .select("id, score, total, completed_at")
+        .eq("user_id", currentUser.id)
+        .order("completed_at", { ascending: false });
+
+      if (error) {
+        box.textContent = "No se pudieron cargar tus notas: " + error.message;
+        return;
+      }
+      box.replaceChildren();
+      if (!data.length) {
+        box.textContent = "Todavía no tienes exámenes registrados.";
+        return;
+      }
+      data.forEach(attempt => {
+        const item = document.createElement("p");
+        item.textContent = formatDate(attempt.completed_at) +
+          " — " + attempt.score + "/" + attempt.total;
+        box.appendChild(item);
+      });
+    }
+
+    async function loadTeacherResults() {
+      const box = document.getElementById("teacher-results");
+      if (!currentProfile || currentProfile.role !== "teacher") {
+        box.textContent = "Acceso no autorizado.";
+        return;
+      }
+      box.textContent = "Cargando calificaciones…";
+      const [profilesResponse, attemptsResponse] = await Promise.all([
+        client.from("profiles").select("user_id, display_name").eq("role", "student"),
+        client.from("quiz_attempts")
+          .select("id, user_id, score, total, completed_at")
+          .order("completed_at", { ascending: false })
+      ]);
+
+      if (profilesResponse.error || attemptsResponse.error) {
+        box.textContent = "Error al consultar notas: " +
+          (profilesResponse.error || attemptsResponse.error).message;
+        return;
+      }
+      if (!attemptsResponse.data.length) {
+        box.textContent = "Todavía no hay calificaciones.";
+        return;
+      }
+      const names = new Map(profilesResponse.data.map(profile => [
+        profile.user_id, profile.display_name || "Estudiante"
+      ]));
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.innerHTML = "<tr><th>Estudiante</th><th>Nota</th><th>Fecha</th></tr>";
+      table.appendChild(thead);
+      const tbody = document.createElement("tbody");
+
+      attemptsResponse.data.forEach(attempt => {
+        const row = document.createElement("tr");
+        const name = document.createElement("td");
+        const score = document.createElement("td");
+        const date = document.createElement("td");
+        name.textContent = names.get(attempt.user_id) || "Estudiante";
+        score.textContent = attempt.score + "/" + attempt.total;
+        date.textContent = formatDate(attempt.completed_at);
+        row.append(name, score, date);
+        tbody.appendChild(row);
+      });
+
+      table.appendChild(tbody);
+      box.replaceChildren(table);
+    }
+
+    document.getElementById("refresh-teacher").addEventListener("click", async () => {
+      try {
+        await loadTeacherResults();
+      } catch (err) {
+        showStatus("No se pudieron actualizar las notas: " + err.message);
+      }
+    });
+
+    async function loadTeacherIncidents() {
+      const box = document.getElementById("teacher-incidents");
+      if (!currentProfile || currentProfile.role !== "teacher") {
+        box.textContent = "Acceso no autorizado.";
+        return;
+      }
+      box.textContent = "Cargando incidencias…";
+      const [incidentsResponse, profilesResponse] = await Promise.all([
+        client.from("exam_incidents")
+          .select("id, user_id, incident_type, details, created_at")
+          .order("created_at", { ascending: false }),
+        client.from("profiles").select("user_id, display_name")
+      ]);
+      if (incidentsResponse.error || profilesResponse.error) {
+        box.textContent = "Error al consultar incidencias: " +
+          (incidentsResponse.error || profilesResponse.error).message;
+        return;
+      }
+      const incidents = incidentsResponse.data || [];
+      if (!incidents.length) {
+        box.textContent = "Todavía no hay incidencias registradas.";
+        return;
+      }
+      const names = new Map((profilesResponse.data || []).map(profile => [
+        profile.user_id, profile.display_name || "Estudiante"
+      ]));
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.innerHTML = "<tr><th>Estudiante</th><th>Incidencia</th><th>Detalle</th><th>Fecha</th></tr>";
+      table.appendChild(thead);
+      const tbody = document.createElement("tbody");
+      incidents.forEach(incident => {
+        const row = document.createElement("tr");
+        const name = document.createElement("td");
+        const type = document.createElement("td");
+        const details = document.createElement("td");
+        const date = document.createElement("td");
+        name.textContent = names.get(incident.user_id) || "Estudiante";
+        type.textContent = incident.incident_type === "tab_hidden"
+          ? "Cambio de pestaña"
+          : incident.incident_type === "fullscreen_exit"
+            ? "Salida de pantalla completa"
+            : incident.incident_type || "Incidencia";
+        details.textContent = incident.details || "Sin detalles";
+        date.textContent = formatDate(incident.created_at);
+        row.append(name, type, details, date);
+        tbody.appendChild(row);
+      });
+      table.appendChild(tbody);
+      box.replaceChildren(table);
+    }
+
+    document.getElementById("refresh-incidents").addEventListener("click", async () => {
+      try {
+        await loadTeacherIncidents();
+      } catch (err) {
+        document.getElementById("teacher-incidents").textContent =
+          "No se pudieron cargar las incidencias: " + err.message;
+      }
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      if (!client) return;
+      const { error } = await client.auth.signOut();
+      if (error) {
+        showStatus("No se pudo cerrar sesión: " + error.message);
+        return;
+      }
+      await refreshSession();
+      showStatus("Sesión cerrada.");
+    });
+
+    async function startApp() {
+      if (!window.supabase) {
+        showStatus("No se pudo cargar la librería de Supabase. Revisa tu conexión.");
+        return;
+      }
+      if (SUPABASE_URL.startsWith("PEGA_AQUI") ||
+          SUPABASE_KEY.startsWith("PEGA_AQUI")) {
+        showStatus("Falta configurar SUPABASE_URL y SUPABASE_KEY en este archivo.");
+        return;
+      }
+      try {
+        client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        await refreshSession();
+      } catch (err) {
+        showStatus("No se pudo conectar con Supabase: " + err.message);
+      }
+    }
+
+    startApp();
+  </script>
+</body>
+</html>
