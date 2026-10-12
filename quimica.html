@@ -469,6 +469,58 @@ for (let i = loadedQuestions.length - 1; i > 0; i--) {
     box.textContent = "Todavía no hay incidencias registradas.";
     return;
   }
+        const names = new Map(
+  (profilesResponse.data || []).map(profile => [
+    profile.user_id,
+    profile.display_name || "Estudiante"
+  ])
+);
+
+const table = document.createElement("table");
+const thead = document.createElement("thead");
+
+thead.innerHTML = `
+  <tr>
+    <th>Estudiante</th>
+    <th>Incidencia</th>
+    <th>Detalle</th>
+    <th>Fecha</th>
+  </tr>
+`;
+
+table.appendChild(thead);
+
+const tbody = document.createElement("tbody");
+
+incidents.forEach(incident => {
+  const row = document.createElement("tr");
+
+  const name = document.createElement("td");
+  const type = document.createElement("td");
+  const details = document.createElement("td");
+  const date = document.createElement("td");
+
+  name.textContent =
+    names.get(incident.user_id) || "Estudiante";
+
+  type.textContent =
+    incident.incident_type === "tab_hidden"
+      ? "Cambio de pestaña"
+      : incident.incident_type === "fullscreen_exit"
+        ? "Salida de pantalla completa"
+        : incident.incident_type;
+
+  details.textContent = incident.details || "Sin detalles";
+  date.textContent = new Date(
+    incident.created_at
+  ).toLocaleString();
+
+  row.append(name, type, details, date);
+  tbody.appendChild(row);
+});
+
+table.appendChild(tbody);
+box.replaceChildren(table);
 
   const names = new Map(
     (profilesResponse.data || []).map(profile => [
