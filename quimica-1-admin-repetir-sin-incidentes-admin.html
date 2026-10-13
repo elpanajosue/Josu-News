@@ -413,7 +413,7 @@
       }
       box.textContent = "Cargando calificaciones…";
       const [profilesResponse, attemptsResponse] = await Promise.all([
-        client.from("profiles").select("user_id, display_name").eq("role", "student"),
+        client.from("profiles").select("user_id, display_name"),
         client.from("quiz_attempts")
           .select("id, user_id, score, total, completed_at")
           .order("completed_at", { ascending: false })
