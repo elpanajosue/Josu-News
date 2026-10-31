@@ -594,19 +594,6 @@ body[data-temporada="halloween"] .masthead {
     border-bottom-color: #ff7518;
 }
 
-body[data-temporada="halloween"] .brand h1,
-body[data-temporada="halloween"] .hero-content h2,
-body[data-temporada="halloween"] .section-title {
-    color: #fff0dc;
-}
-
-body[data-temporada="halloween"] main,
-body[data-temporada="halloween"] main p,
-body[data-temporada="halloween"] main h2,
-body[data-temporada="halloween"] main h3,
-body[data-temporada="halloween"] main li {
-    color: #fff0dc;
-}
 
 body[data-temporada="halloween"] .news-card,
 body[data-temporada="halloween"] .newspaper-page {
