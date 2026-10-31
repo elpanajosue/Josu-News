@@ -722,3 +722,139 @@ body[data-temporada="navidad"] h4,
 body[data-temporada="navidad"] label {
   color: #172b20;
 }
+/* DECORACIONES ESPECIALES POR TEMPORADA */
+
+.decoracion-especial {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+/* HALLOWEEN: telarañas */
+.telarana {
+  position: fixed;
+  top: 0;
+  font-size: clamp(42px, 7vw, 76px);
+  opacity: 0.85;
+  filter: grayscale(1);
+}
+
+.esquina-superior-izquierda {
+  top: 8px;
+  left: 8px;
+}
+
+.esquina-superior-derecha {
+  top: 8px;
+  right: 8px;
+  transform: scaleX(-1);
+}
+
+/* Calabazas en los laterales */
+.calabaza {
+  top: 42%;
+  font-size: 32px;
+  animation: calabaza-flota 3s ease-in-out infinite;
+}
+
+.lado-izquierdo {
+  left: 8px;
+}
+
+.lado-derecho {
+  right: 8px;
+}
+
+@keyframes calabaza-flota {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Murciélagos */
+.murcielago {
+  top: 20%;
+  font-size: 24px;
+  animation: murcielago-vuela 12s linear infinite;
+}
+
+.volador-uno {
+  left: -40px;
+}
+
+.volador-dos {
+  left: -80px;
+  top: 32%;
+  animation-delay: -6s;
+}
+
+@keyframes murcielago-vuela {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 100px)); }
+}
+
+/* DÍA DE LAS VELITAS */
+.velita {
+  bottom: 12px;
+  font-size: clamp(34px, 5vw, 52px);
+  filter: drop-shadow(0 0 12px #ffbd45);
+  animation: llama-brilla 1.5s ease-in-out infinite alternate;
+}
+
+.esquina-inferior-izquierda {
+  left: 12px;
+}
+
+.esquina-inferior-derecha {
+  right: 12px;
+}
+
+@keyframes llama-brilla {
+  from { filter: drop-shadow(0 0 5px #ffbd45); }
+  to { filter: drop-shadow(0 0 16px #ff9d20); }
+}
+
+/* NAVIDAD: nieve */
+.nieve {
+  top: -30px;
+  color: #7cabc9;
+  font-size: 25px;
+  animation: nieve-cae 10s linear infinite;
+}
+
+.nieve-uno { left: 20%; }
+.nieve-dos { left: 55%; animation-delay: -4s; }
+.nieve-tres { left: 82%; animation-delay: -7s; }
+
+@keyframes nieve-cae {
+  from { transform: translateY(-30px) rotate(0deg); }
+  to { transform: translateY(110vh) rotate(360deg); }
+}
+
+.rama-navidad {
+  bottom: 12px;
+  font-size: 34px;
+}
+
+/* En celulares, reducir adornos laterales */
+@media (max-width: 600px) {
+  .calabaza {
+    font-size: 23px;
+  }
+
+  .telarana {
+    font-size: 42px;
+  }
+
+  .murcielago {
+    font-size: 19px;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .decoracion-especial {
+    animation: none !important;
+  }
+}
