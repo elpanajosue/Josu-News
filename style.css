@@ -559,3 +559,109 @@ main {
         right: 5px;
     }
 }
+/* ==================================
+   JOSUÉ NEWS — TEMAS AUTOMÁTICOS
+   ================================== */
+
+body {
+  --papel: #f5f1e8;
+  --tinta: #111111;
+  --acento: #b40000;
+
+  background-color: var(--papel);
+  color: var(--tinta);
+  transition: background-color 0.5s, color 0.5s;
+}
+
+/* HALLOWEEN */
+body[data-temporada="halloween"] {
+  --papel: #211b20;
+  --tinta: #fff0dc;
+  --acento: #ff7518;
+
+  background-image:
+    radial-gradient(ellipse at top, #49263b 0%, transparent 65%);
+}
+
+body[data-temporada="halloween"] .masthead,
+body[data-temporada="halloween"] .site-header {
+  border-bottom-color: var(--acento);
+}
+
+/* DÍA DE LAS VELITAS */
+body[data-temporada="velitas"] {
+  --papel: #fff0d0;
+  --tinta: #38251b;
+  --acento: #b40000;
+
+  background-image:
+    radial-gradient(ellipse at top, #ffe0a0 0%, transparent 65%);
+}
+
+body[data-temporada="velitas"] .masthead,
+body[data-temporada="velitas"] .site-header {
+  border-bottom-color: #c18a28;
+}
+
+/* NAVIDAD */
+body[data-temporada="navidad"] {
+  --papel: #f5eee1;
+  --tinta: #172b20;
+  --acento: #b40000;
+
+  background-image:
+    radial-gradient(ellipse at top, #e1eadb 0%, transparent 65%);
+}
+
+body[data-temporada="navidad"] .masthead,
+body[data-temporada="navidad"] .site-header {
+  border-bottom-color: #a88742;
+}
+
+/* ADORNOS ANIMADOS */
+.adorno-temporada {
+  position: fixed;
+  top: -35px;
+  z-index: 999;
+  pointer-events: none;
+  user-select: none;
+  font-size: 19px;
+  opacity: 0.65;
+  color: var(--acento, #b40000);
+  animation: caer-temporada linear infinite;
+}
+
+body[data-temporada="halloween"] .adorno-temporada {
+  color: #ff8a24;
+}
+
+body[data-temporada="velitas"] .adorno-temporada {
+  color: #c18a28;
+  text-shadow: 0 0 10px #ffcc65;
+}
+
+body[data-temporada="navidad"] .adorno-temporada {
+  color: #b40000;
+}
+
+@keyframes caer-temporada {
+  from {
+    transform: translateY(-5vh) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(110vh) rotate(180deg);
+  }
+}
+
+/* RESPETAR LA PREFERENCIA DE MENOS ANIMACIONES */
+@media (prefers-reduced-motion: reduce) {
+  .adorno-temporada {
+    animation: none;
+    display: none;
+  }
+
+  body {
+    transition: none;
+  }
+}
