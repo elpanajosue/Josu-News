@@ -46,3 +46,21 @@
       crearDecoracion("rama-navidad", "🎄", "esquina-inferior-izquierda");
       crearDecoracion("rama-navidad", "🎄", "esquina-inferior-derecha");
     }
+}
+
+  function iniciar() {
+    actualizarTemporada();
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        actualizarTemporada();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", iniciar, { once: true });
+  } else {
+    iniciar();
+  }
+})();
