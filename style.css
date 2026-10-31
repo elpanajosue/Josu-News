@@ -665,3 +665,60 @@ body[data-temporada="navidad"] .adorno-temporada {
     transition: none;
   }
 }
+/* MEJORAR LA LEGIBILIDAD EN CADA TEMPORADA */
+
+/* HALLOWEEN: fondo oscuro, letras claras */
+body[data-temporada="halloween"] {
+  color: #fff0dc;
+}
+
+body[data-temporada="halloween"] p,
+body[data-temporada="halloween"] li,
+body[data-temporada="halloween"] h1,
+body[data-temporada="halloween"] h2,
+body[data-temporada="halloween"] h3,
+body[data-temporada="halloween"] h4,
+body[data-temporada="halloween"] label {
+  color: #fff0dc;
+}
+
+body[data-temporada="halloween"] a:not(.exam-button) {
+  color: #ffb45e;
+}
+
+body[data-temporada="halloween"] input,
+body[data-temporada="halloween"] textarea,
+body[data-temporada="halloween"] select {
+  background-color: #fffaf2;
+  color: #111111;
+}
+
+/* VELITAS: fondo claro, letras oscuras */
+body[data-temporada="velitas"] {
+  color: #38251b;
+}
+
+body[data-temporada="velitas"] p,
+body[data-temporada="velitas"] li,
+body[data-temporada="velitas"] h1,
+body[data-temporada="velitas"] h2,
+body[data-temporada="velitas"] h3,
+body[data-temporada="velitas"] h4,
+body[data-temporada="velitas"] label {
+  color: #38251b;
+}
+
+/* NAVIDAD: fondo claro, letras oscuras */
+body[data-temporada="navidad"] {
+  color: #172b20;
+}
+
+body[data-temporada="navidad"] p,
+body[data-temporada="navidad"] li,
+body[data-temporada="navidad"] h1,
+body[data-temporada="navidad"] h2,
+body[data-temporada="navidad"] h3,
+body[data-temporada="navidad"] h4,
+body[data-temporada="navidad"] label {
+  color: #172b20;
+}
