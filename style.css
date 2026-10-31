@@ -858,3 +858,71 @@ body[data-temporada="navidad"] label {
     animation: none !important;
   }
 }
+/* ADORNOS FIJOS EN LAS ESQUINAS */
+
+.decoracion-especial {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  font-size: 42px;
+}
+
+.esquina-superior-izquierda {
+  top: 12px;
+  left: 12px;
+}
+
+.esquina-superior-derecha {
+  top: 12px;
+  right: 12px;
+}
+
+.esquina-inferior-izquierda {
+  bottom: 12px;
+  left: 12px;
+}
+
+.esquina-inferior-derecha {
+  bottom: 12px;
+  right: 12px;
+}
+
+.telarana {
+  font-size: 55px;
+  opacity: 0.85;
+}
+
+.calabaza {
+  font-size: 38px;
+}
+
+.velita {
+  font-size: 42px;
+  filter: drop-shadow(0 0 8px #ffbd45);
+}
+
+.estrella {
+  color: #c49a35;
+  font-size: 52px;
+}
+
+.rama-navidad {
+  font-size: 38px;
+}
+
+@media (max-width: 600px) {
+  .decoracion-especial {
+    font-size: 30px;
+  }
+
+  .telarana {
+    font-size: 40px;
+  }
+
+  .calabaza,
+  .rama-navidad {
+    font-size: 28px;
+  }
+}
