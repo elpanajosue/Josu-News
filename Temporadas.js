@@ -17,6 +17,38 @@
     }
 
     document.body.dataset.temporada = temporada;
+    // Decoraciones especiales de cada temporada
+    document.querySelectorAll(".decoracion-especial").forEach(el => el.remove());
+
+    function crearDecoracion(clase, contenido, posicion) {
+      const elemento = document.createElement("div");
+      elemento.className = `decoracion-especial ${clase} ${posicion}`;
+      elemento.setAttribute("aria-hidden", "true");
+      elemento.textContent = contenido;
+      document.body.appendChild(elemento);
+    }
+
+    if (temporada === "halloween") {
+      crearDecoracion("telarana", "🕸️", "esquina-superior-izquierda");
+      crearDecoracion("telarana", "🕸️", "esquina-superior-derecha");
+      crearDecoracion("calabaza", "🎃", "lado-izquierdo");
+      crearDecoracion("calabaza", "🎃", "lado-derecho");
+      crearDecoracion("murcielago", "🦇", "volador-uno");
+      crearDecoracion("murcielago", "🦇", "volador-dos");
+    }
+
+    if (temporada === "velitas") {
+      crearDecoracion("velita", "🕯️", "esquina-inferior-izquierda");
+      crearDecoracion("velita", "🕯️", "esquina-inferior-derecha");
+    }
+
+    if (temporada === "navidad") {
+      crearDecoracion("nieve", "❄", "nieve-uno");
+      crearDecoracion("nieve", "❄", "nieve-dos");
+      crearDecoracion("nieve", "❄", "nieve-tres");
+      crearDecoracion("rama-navidad", "🎄", "esquina-inferior-izquierda");
+      crearDecoracion("rama-navidad", "🎄", "esquina-inferior-derecha");
+    }
 
     document.querySelectorAll(".adorno-temporada").forEach(el => el.remove());
 
