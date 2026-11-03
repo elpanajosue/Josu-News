@@ -527,8 +527,7 @@
     });
 
     document.getElementById("admin-repeat-exam").addEventListener("click", async () => {
-      if (!currentUser || !currentProfile || currentProfile.role !== "admin" || busy) {
-        showStatus("Esta función solo está disponible para la cuenta administradora.");
+      if (!currentUser || !currentProfile || busy)
         return;
       }
 
