@@ -370,7 +370,7 @@
         examAttemptActive = false;
         setVisible("examen", false);
         setVisible("fullscreen-gate", false);
-        setVisible("admin-repeat-exam", currentProfile && currentProfile.role === "admin");
+        setVisible("admin-repeat-exam", currentProfile && currentProfile));
         await loadMyResults();
       } catch (err) {
         showStatus("No se pudo entregar el examen: " + err.message);
